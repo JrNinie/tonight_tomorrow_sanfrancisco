@@ -20,7 +20,7 @@ CREATE TABLE t_movie (
     actor_1 VARCHAR(50),
     actor_2 VARCHAR(50),
     actor_3 VARCHAR(50),
-    location_funfact JSON,
+    location_funfact JSON NOT NULL,
     movie_like_counter INTEGER,
     location_like_counter INTEGER
 );
@@ -33,7 +33,6 @@ CREATE TABLE t_user (
     password TEXT NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    tel TEXT [],
     is_admin BOOLEAN NOT NULL,
     is_activated BOOLEAN NOT NULL,
     liked_movie_id UUID [],

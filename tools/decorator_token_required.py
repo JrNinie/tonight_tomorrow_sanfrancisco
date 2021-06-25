@@ -1,4 +1,4 @@
-from flask import request, current_app, g
+from flask import request, current_app
 from functools import wraps
 import jwt
 from models.user import User
@@ -25,13 +25,6 @@ def token_required(f):
         if not token:
             logger.error("Required token is missing.")
             raise CredentialError(message="Required token is missing.")
-
-        # Get jwt payload WITHOUT verification
-        jwt_payload = jwt.decode(
-            token, current_app.config["SECRET_KEY"], verify=False, algorithms="HS256"
-        )
-        # Define global variable to track action
-        g.current_user_id = jwt_payload["id"]
 
         # Get jwt payload WITH verification
         try:

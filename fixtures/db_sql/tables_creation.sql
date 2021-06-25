@@ -39,4 +39,4 @@ CREATE TABLE t_user (
 
 
 -- COPY t_movie(title,release_year,production_company,distributor,director,writer,actor_1,actor_2,actor_3,location_funfact,movie_like_counter) FROM '/Users/Jr/Documents/self_project/tonight_tomorrow_sanfrancisco/fixtures/db_sql/movies.csv' DELIMITER ',' CSV HEADER;
--- INSERT INTO t_user (id, mail, password, first_name, last_name, is_admin, is_activated) VALUES ('26cd6e36-f441-4a6f-9924-0417014803a2', 'admin@gmail.com', 'sha256$aAd0M6vC$4f79400a3c85d0250890adef5ec76469aebbb5c9acf036a7d1008f0ce73fbf96', 'Lea', 'DUPONT', True, True);
+-- INSERT INTO t_user (id, mail, password, first_name, last_name, is_admin, is_activated) VALUES ('26cd6e36-f441-4a6f-9924-0417014803a2', 'admin@gmail.com', 'sha256$aAd0M6vC$4f79400a3c85d0250890adef5ec76469aebbb5c9acf036a7d1008f0ce73fbf96', 'Lea', 'Dupont', True, True);

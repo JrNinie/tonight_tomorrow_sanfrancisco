@@ -32,17 +32,16 @@ class User(db.Model):
     movie_like_counter = db.Column(db.Integer)
     location_like_counter = db.Column(db.Integer)
 
+    def to_dict(self, *columns_to_ignore):
+        """Convert to dict
+        This method allows to convert schema to dict and ignore unwanted info.
 
-def to_dict(self, *columns_to_ignore):
-    """Convert to dict
-    This method allows to convert schema to dict and ignore unwanted info.
-
-    Returns:
-        dict: dict of schema's wanted info
-    """
-    dict_ = {}
-    for key in self.__mapper__.c.keys():
-        if key in columns_to_ignore:
-            continue
-        dict_[key] = getattr(self, key)
-    return dict_
+        Returns:
+            dict: dict of schema's wanted info
+        """
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            if key in columns_to_ignore:
+                continue
+            dict_[key] = getattr(self, key)
+        return dict_

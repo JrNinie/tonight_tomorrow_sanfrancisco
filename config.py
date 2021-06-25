@@ -4,6 +4,9 @@ import os
 class Config:
     """Base config"""
 
+    # Secret key to generate token
+    SECRET_KEY = os.getenv("SECRET_KEY")
+
     # Configure/connextion database
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False

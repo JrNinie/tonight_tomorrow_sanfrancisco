@@ -25,20 +25,19 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False)
     is_activated = db.Column(db.Boolean, nullable=False)
-    liked_movie_id = db.Column(db.Array)
-    liked_location_id = db.Column(db.Array)
+    liked_movie_id = db.Column(db.ARRAY(UUID))
+    liked_location_id = db.Column(db.ARRAY(UUID))
 
+    def to_dict(self, *columns_to_ignore):
+        """Convert to dict
+        This method allows to convert schema to dict and ignore unwanted info.
 
-def to_dict(self, *columns_to_ignore):
-    """Convert to dict
-    This method allows to convert schema to dict and ignore unwanted info.
-
-    Returns:
-        dict: dict of schema's wanted info
-    """
-    dict_ = {}
-    for key in self.__mapper__.c.keys():
-        if key in columns_to_ignore:
-            continue
-        dict_[key] = getattr(self, key)
-    return dict_
+        Returns:
+            dict: dict of schema's wanted info
+        """
+        dict_ = {}
+        for key in self.__mapper__.c.keys():
+            if key in columns_to_ignore:
+                continue
+            dict_[key] = getattr(self, key)
+        return dict_

@@ -23,7 +23,7 @@ def prepare_movie_data(filepath):
         - Modify in order that every movie takes only 1 line and /
         its related 'location'and 'fun fact' become an dict keeped /
         in a new column 'location_funfact'
-        - Add columns 'movie_like_counter' and 'location_like_counter'
+        - Add columns 'movie_like_counter'
 
     Args:
         filepath (string): file path for raw data
@@ -69,15 +69,14 @@ def prepare_movie_data(filepath):
 
     # Merge "location_funfact" to dataframe
     new_dataframe = pd.merge(dataframe, df_temp, on="title")
-    # Add "movie_like_counter" & "location_like_counter"
+    # Add "movie_like_counter"
     new_dataframe["movie_like_counter"] = 0
-    new_dataframe["location_like_counter"] = 0
 
-    new_dataframe.to_csv("db_sql/movies.csv", index=False)
+    new_dataframe.to_csv("./movies.csv", index=False)
 
 
 def main():
-    prepare_movie_data("db_sql/Film_Locations_in_San_Francisco.csv")
+    prepare_movie_data("./Film_Locations_in_San_Francisco.csv")
 
 
 if __name__ == "__main__":

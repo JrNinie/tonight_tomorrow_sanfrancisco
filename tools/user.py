@@ -76,7 +76,6 @@ def verify_type_integrity_of_data(template, data):
                     "last_name": str,
                     "mail": str,
                     "liked_movie_id": list,
-                    "liked_location_id": list,
                     }
         data (dict): data in the body of a request
 

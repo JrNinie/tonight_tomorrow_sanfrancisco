@@ -10,7 +10,7 @@ from tools.user import is_uuid, verify_type_integrity_of_data, verify_data_form
 logger = get_logger()
 
 
-def create_new_user(current_user, data):
+def create_new_user(data):
     # Data form check (dict send in json)
     verify_data_form(data)
 
@@ -151,8 +151,8 @@ def modify_user(current_user, data, user_id):
     right = "([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$"
     regex = rf"{left}@{right}"
     if not re.search(regex, mail):
-        logger.error(f"{mail} is not a valid sigfox email address.")
-        raise InputError(message="Only a valid sigfox email address is accepted.")
+        logger.error(f"{mail} is not a valid email address.")
+        raise InputError(message="Only a valid email address is accepted.")
     first_name = data["first_name"].capitalize()
     last_name = data["last_name"].capitalize()
     is_admin = data["is_admin"]

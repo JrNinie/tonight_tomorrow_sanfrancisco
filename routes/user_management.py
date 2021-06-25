@@ -12,8 +12,7 @@ user = Blueprint("user", __name__, url_prefix="/users")
 
 
 @user.route("", methods=["POST"])
-@token_required
-def create_user(current_user):
+def create_user():
     """Create new user
     This allows admin ONLY to create a new user.
 
@@ -22,12 +21,10 @@ def create_user(current_user):
     Methods: POST
 
     Args:
-            current_user : the user identified by decorator 'token_required'
             x-access-token: token genarated after /login
                             and kept in localstorage/cookie
             body: user's info in json (mail, password, first_name,
                   last_name, is_admin, is_activated) except "liked_movie_id"
-                  and "liked_location_id"
 
     Returns:
             message : positive response about action
@@ -35,7 +32,7 @@ def create_user(current_user):
             message & error_code : negative response about action
     """
     data = request.get_json()
-    return create_new_user(current_user, data)
+    return create_new_user(data)
 
 
 @user.route("/<user_id>", methods=["GET"])

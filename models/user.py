@@ -26,7 +26,6 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, nullable=False)
     is_activated = db.Column(db.Boolean, nullable=False)
     liked_movie_id = db.Column(db.ARRAY(UUID))
-    liked_location_id = db.Column(db.ARRAY(UUID))
 
     def to_dict(self, *columns_to_ignore):
         """Convert to dict

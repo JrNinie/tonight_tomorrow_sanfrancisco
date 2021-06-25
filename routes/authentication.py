@@ -15,7 +15,7 @@ def login():
     Methods: GET
 
     Params:
-            Authorization: basic auth with username(sigfox mail) and password
+            Authorization: basic auth with username and password
 
     Returns:
             token: (if mail & password correct) confidential token

@@ -30,7 +30,6 @@ class User(db.Model):
     actor_3 = db.Column(db.String(50))
     location_funfact = db.Column(JSON, nullable=False)
     movie_like_counter = db.Column(db.Integer)
-    location_like_counter = db.Column(db.Integer)
 
     def to_dict(self, *columns_to_ignore):
         """Convert to dict

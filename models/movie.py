@@ -1,9 +1,15 @@
 from sqlalchemy.dialects.postgresql import UUID, JSON
+from sqlalchemy import func, any_
 import uuid
 from . import db
+from exceptions.errors import DatabaseError
+from log.my_logger import get_logger
+from sqlalchemy.ext.hybrid import hybrid_method
+
+logger = get_logger()
 
 
-class User(db.Model):
+class Movie(db.Model):
     """Data model for movies & locations
 
     Args:
@@ -44,3 +50,66 @@ class User(db.Model):
                 continue
             dict_[key] = getattr(self, key)
         return dict_
+
+
+    def get_all_movies_contain(self, *keywords):
+        """Find movies if they contain keyword in title
+
+        Args:
+            keyword (string): keywords input
+
+        Raises:
+            DatabaseError: Errors occured when find movies in db
+
+        Returns:
+            dict: key is "id" (string) and value "title"
+        """
+        keywords_list = [("%" + keyword + "%").upper() for keyword in keywords]
+
+        movies_title_with_id_dict = {}
+        try:
+            # Find all movies ("id" & "title") which contains keyword in their "title"
+            # result is a list of tuple : [(UUID('1a'), 'm1'), (UUID('1b'), 'm2')]
+            movies_title_with_id = Movie.query.filter(
+                func.upper(Movie.title).like(
+                    any_(keywords_list))).with_entities(Movie.id,
+                                                        Movie.title).all()
+
+            # Convert "id" (UUID type) to string then to dict
+            movies_title_with_id_dict = dict([
+                (str(id), title) for id, title in movies_title_with_id
+            ])
+        except Exception as e:
+            logger.error(f"Errors when find movies, details: {e}")
+            raise DatabaseError(f"Errors when find movies, details: {e}")
+        return movies_title_with_id_dict
+
+
+    # TODO find a more efficient way to do it by avoiding retrieve all locations_funfacts
+    def get_all_locations_contain(self, *keywords):
+        """Find locations if they contain keyword
+
+        Args:
+            keyword (string): keywords input
+
+        Returns:
+            dict: key is "id" (string) and value "location"
+        """
+
+        # Find all location_funfacts with related movies id
+        locations_funfacts_with_movieid = Movie.query.with_entities(
+            Movie.id, Movie.location_funfact).all()
+        # Convert "id" (UUID type) to string then to dict
+        locations_funfacts_with_movieid_dict = dict(
+            (str(id), location_funfact)
+            for id, location_funfact in locations_funfacts_with_movieid)
+
+        result = {}
+        for movie_id, location_funfact in locations_funfacts_with_movieid_dict.items(
+        ):
+            for location in location_funfact.keys():
+                for keyword in keywords:
+                    if keyword.upper() in location.upper():
+                        result[movie_id] = location
+
+        return result

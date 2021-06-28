@@ -1,5 +1,6 @@
 from .authentication import auth
 from .user_management import user
+from .autocomplete import autocomplete
 
 
 def init_app(app):
@@ -10,3 +11,4 @@ def init_app(app):
     """
     app.register_blueprint(auth)
     app.register_blueprint(user)
+    app.register_blueprint(autocomplete)

@@ -2,9 +2,9 @@ from sqlalchemy.dialects.postgresql import UUID, JSON
 from sqlalchemy import func, any_
 import uuid
 from . import db
-from exceptions.errors import DatabaseError
+from exceptions.errors import DatabaseError, NotFoundError, InputError
 from log.my_logger import get_logger
-from sqlalchemy.ext.hybrid import hybrid_method
+from tools.common import is_valid_uuid
 
 logger = get_logger()
 
@@ -51,7 +51,6 @@ class Movie(db.Model):
             dict_[key] = getattr(self, key)
         return dict_
 
-
     def get_all_movies_contain(self, *keywords):
         """Find movies if they contain keyword in title
 
@@ -84,7 +83,6 @@ class Movie(db.Model):
             raise DatabaseError(f"Errors when find movies, details: {e}")
         return movies_title_with_id_dict
 
-
     # TODO find a more efficient way to do it by avoiding retrieve all locations_funfacts
     def get_all_locations_contain(self, *keywords):
         """Find locations if they contain keyword
@@ -97,8 +95,13 @@ class Movie(db.Model):
         """
 
         # Find all location_funfacts with related movies id
-        locations_funfacts_with_movieid = Movie.query.with_entities(
-            Movie.id, Movie.location_funfact).all()
+        try:
+            locations_funfacts_with_movieid = Movie.query.with_entities(
+                Movie.id, Movie.location_funfact).all()
+        except Exception as e:
+            logger.error(f"Errors when find locations, details: {e}")
+            raise DatabaseError(f"Errors when find locations, details: {e}")
+
         # Convert "id" (UUID type) to string then to dict
         locations_funfacts_with_movieid_dict = dict(
             (str(id), location_funfact)
@@ -113,3 +116,36 @@ class Movie(db.Model):
                         result[movie_id] = location
 
         return result
+
+    def get_movie_by_id(self, id):
+        """Find movie by id
+
+        Args:
+            id (string): movie id
+
+        Raises:
+            DatabaseError: Errors when find movie in db
+            NotFoundError: No corresponding movie in db
+            InputError: Not valid UUID input
+
+        Returns:
+            dict: All info in db about the corresponding movie
+        """
+        # UUID validation
+        if not is_valid_uuid(id):
+            logger.error(f"{id} is not valid UUID")
+            raise InputError(f"{id} is not valid UUID")
+
+        # Find movie by id
+        try:
+            movie = Movie.query.filter_by(id=id).first()
+        except Exception as e:
+            logger.error(f"Errors when find movies, details: {e}")
+            raise DatabaseError(f"Errors when find movies, details: {e}")
+
+        if not movie:
+            logger.error(f"Corresponding movie not found for '{id}'")
+            raise NotFoundError(
+                message=f"Corresponding movie not found for '{id}'.")
+
+        return movie.to_dict()
